@@ -1,0 +1,4 @@
+# .gitignore
+
+# Streamlit titkos fájl
+.streamlit/secrets.toml

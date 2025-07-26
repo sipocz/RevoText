@@ -1,5 +1,6 @@
 import streamlit as st
 st.set_page_config(layout="wide")
+kulcs = st.secrets["API_KEYS"]["OpenAI"]
 
 st.markdown(
     "<h1 style='text-align: center;'>RevoText</h1>",
@@ -7,7 +8,7 @@ st.markdown(
 )
 
 def feldolgozas():
-    eredmeny1=st.session_state.text1
+    eredmeny1=st.session_state.text1+kulcs
     # Eredményeket eltároljuk session_state-ben
     st.session_state.text2 = eredmeny1
     
