@@ -50,27 +50,19 @@ def create_prompt(szoveg):
 
 
 
-def get_AI_response(szoveg:str)->dict:
-    prompt_message = create_prompt(szoveg)
-    client = OpenAI(api_key=key)
 
-    response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=prompt_message,
-            temperature=0.2,
-            max_tokens=200
-            )
-    print(response)
-
-
-
-ratings = {
-    "Pontosság": 4,
-    "Részletesség": 5,
-    "Stílus": 3,
-    "Érdekesség": 4,
-    "Összbenyomás": 5
-}
+if 'ratings' not in st.session_state:
+    st.session_state.ratings = {
+        "Érthetőség": 1,
+        "Részletesség": 1,
+        "Szerkezet": 1,
+        "Célcsoport": 1,
+        "Stílus": 1,
+        "Előnyök": 1,
+        "Negatívumok": 1,
+        "Ösztönzés": 1,
+        "Összesítés": 1
+            }
 
 
 def get_response(szoveg:str):
@@ -82,8 +74,10 @@ def get_response(szoveg:str):
         temperature=0.2,
         max_tokens=200
     )
+   
+    out_dict= json.loads(response.choices[0].message.content)
 
-    return(response.choices[0].message.content)
+    return(out_dict)
 
 st.markdown(
     "<h1 style='text-align: center;'>RevoText</h1>",
@@ -91,15 +85,19 @@ st.markdown(
 )
 
 def feldolgozas():
+    
     user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
     ai_result=get_response(user_text)
-    st.session_state.text2 = ai_result
+    #st.write(ai_result)
+    st.session_state.ratings=ai_result
+    st.session_state.text2 = "ai_result"
 
 def ertekeles(d:dict)->str:
-    for szempont, ertek in ratings.items():
-        csillagok = "⭐️" * ertek + "☆" * (5 - ertek)
-        st.markdown(f"**{szempont}**<br>{csillagok}", unsafe_allow_html=True)
+    for szempont, ertek in d.items():
+        
+        csillagok = f'{ertek}'+" - "+"⭐️" * int(ertek) + "☆" * (5 - int(ertek))
+        st.markdown(f"**{szempont}**  {csillagok}", unsafe_allow_html=True)
 
 # Szövegmezők létrehozása
 col1,col2 ,col3 = st.columns(3)
@@ -113,4 +111,4 @@ with col2:
     st.button("Feldolgozás indítása", on_click=feldolgozas,use_container_width=True)
 
 with col2:
-    ertekeles(ratings)
+    ertekeles(st.session_state.ratings)
