@@ -8,7 +8,7 @@ st.markdown(
 )
 
 def feldolgozas():
-    eredmeny1=st.session_state.text1+kulcs
+    eredmeny1=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
     st.session_state.text2 = eredmeny1
     
