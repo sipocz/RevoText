@@ -4,7 +4,7 @@ import json
 from openai import OpenAI
 st.set_page_config(layout="wide")
 key = st.secrets["API_KEYS"]["OpenAI"]
-
+  
 
 def create_prompt(szoveg):
     prompt_message=[
