@@ -62,7 +62,7 @@ if 'ratings' not in st.session_state:
         "Negatívumok": 1,
         "Ösztönzés": 1,
         "Összesítés": 1
-            }
+            }  
 
 
 def get_response(szoveg:str):
