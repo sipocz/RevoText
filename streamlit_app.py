@@ -73,17 +73,17 @@ ratings = {
 }
 
 
+def get_response(szoveg:str):
+    client = OpenAI(api_key=key)
+    prompt_message=create_prompt(szoveg)
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=prompt_message,
+        temperature=0.2,
+        max_tokens=200
+    )
 
-client = OpenAI(api_key=key)
-
-response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=prompt_message,
-    temperature=0.2,
-    max_tokens=200
-)
-
-print(response.choices[0].message.content)
+    return(response.choices[0].message.content)
 
 st.markdown(
     "<h1 style='text-align: center;'>RevoText</h1>",
@@ -91,9 +91,10 @@ st.markdown(
 )
 
 def feldolgozas():
-    eredmeny1=st.session_state.text1
+    user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
-    st.session_state.text2 = eredmeny1
+    ai_result=get_response(user_text)
+    st.session_state.text2 = ai_result
 
 def ertekeles(d:dict)->str:
     for szempont, ertek in ratings.items():
