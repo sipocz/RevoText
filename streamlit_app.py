@@ -152,7 +152,7 @@ with col3:
 # Egyszerű feldolgozás gombnyomásra
 with col2:
     st.markdown("---")  # vízszintes vonal
-    st.button("--- Kérem a javaslatot! --->", on_click=feldolgozas,use_container_width=True)
+    st.button("⎯⎯⎯  Kérem a javaslatot! ➤➤➤ ", on_click=feldolgozas,use_container_width=True)
     st.markdown("---")  # vízszintes vonal    
     st.markdown(f"<p style='text-align:center;'>Az eredeti szöveg értékelése</p>", unsafe_allow_html=True)
    
