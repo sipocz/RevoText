@@ -92,7 +92,7 @@ def get_response(szoveg:str):
     return(out_dict)
 
 st.markdown(
-    "<h1 style='text-align: center;'>RevoText</h1>",
+    "<h1 style='text-align: center;'>RevoText</h1><h3 style='text-align: center;'>Version:0.4</h3>",
     unsafe_allow_html=True
 )
 
@@ -118,13 +118,16 @@ def ertekeles(d:dict)->str:
 # Szövegmezők létrehozása
 col1,col2 ,col3 = st.columns(3)
 with col1:
-    st.text_area("Eredeti hirdetés szövege", key="text1", height=400)
+    st.text_area("Eredeti hirdetés szövege", key="text1", height=600)
 
 with col3:
-    st.text_area("AI javaslat", key="text2", height=400)
+    st.text_area("AI javaslat", key="text2", height=600)
 # Egyszerű feldolgozás gombnyomásra
 with col2:
     st.button("Feldolgozás indítása", on_click=feldolgozas,use_container_width=True)
 
 with col2:
     ertekeles(st.session_state.ratings)
+column1,column2=st.columns(2)
+with column1:
+    st.markdown(st.session_state.text2)
