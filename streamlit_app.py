@@ -24,22 +24,27 @@ def create_prompt(szoveg):
                         8. Eladásra ösztönzés'''},
             {"role": "user",
              "content": """
-                            Értékeld az alábbi ingatlanhirdetés szöveget az alábbi szempontok alapján 1–5-ig,
-                            és hozz létre egy összesített eredményt az 1-8 közötti értékek átlagaként ez legyen a 9. Összesítés :
+                            Értékeld az alábbi ingatlanhirdetés szöveget és az értékelést a scoring mezőbe helyezzed el.
+                            Az alábbi szempontok alapján 1–5-ig pontozzad, és hozz létre egy összesített eredményt  1-8 közötti szempontok értékelésének átlagaként ez legyen a 9. Összesítés :
+                            Majd a tudásod alapján adj egy alternatív javaslatot az eredeti szöveg javítására, hogy a lehető legjobban megfeleljen a szempontoknak. 
+                            Az alternatív javaslatot strukturáld, és tördeld a jobb érthetőség érdekében!
+                            Fontos, hogy a saját szempontrendszered szerint az alternatív javaslatod értékelése jobb legyen az eredeti értékelésnél!  
                             A válaszod csak érvényes JSON formátumban legyen, pontosan az alábbi struktúrában:
 
-                            {
+                            {"scoring":
+                                {
 
-                                "Érthetőség": <szám>,
-                                "Részletesség": <szám>,
-                                "Szerkezet": <szám>,
-                                "Célcsoport": <szám>,
-                                "Stílus": <szám>,
-                                "Előnyök": <szám>,
-                                "Negatívumok": <szám>,
-                                "Ösztönzés": <szám>,
-                                "Összesítés": <szám.tizedes>"
-                            }
+                                    "Érthetőség": <szám>,
+                                    "Részletesség": <szám>,
+                                    "Szerkezet": <szám>,
+                                    "Célcsoport": <szám>,
+                                    "Stílus": <szám>,
+                                    "Előnyök": <szám>,
+                                    "Negatívumok": <szám>,
+                                    "Ösztönzés": <szám>,
+                                    "Összesítés": <szám.tizedes>"
+                                },
+                            "proposal":"Ide kerüljön a javított szöveg javaslatod"    
 
 
 
@@ -50,7 +55,7 @@ def create_prompt(szoveg):
 
 
 
-
+# ameddig nincs még értékelés minden alaphelyzeten lesz
 if 'ratings' not in st.session_state:
     st.session_state.ratings = {
         "Érthetőség": 1,
@@ -69,13 +74,20 @@ def get_response(szoveg:str):
     client = OpenAI(api_key=key)
     prompt_message=create_prompt(szoveg)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=prompt_message,
-        temperature=0.2,
-        max_tokens=200
+        temperature=0.5,
+        max_tokens=2900
     )
    
-    out_dict= json.loads(response.choices[0].message.content)
+    content = response.choices[0].message.content
+
+    # a gpt-4 így adja vissza a json választ, kiszedjük a jsont a felesleges keretből
+    if content.startswith("```json"):
+        content = content.strip("`").lstrip("json").strip()
+
+    # 
+    out_dict = json.loads(content)
 
     return(out_dict)
 
@@ -89,9 +101,13 @@ def feldolgozas():
     user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
     ai_result=get_response(user_text)
-    #st.write(ai_result)
-    st.session_state.ratings=ai_result
-    st.session_state.text2 = "ai_result"
+    
+
+
+    print(ai_result) # server oldali kiiratás 
+    #st.write(ai_result) #Debug
+    st.session_state.ratings=ai_result["scoring"]
+    st.session_state.text2 = ai_result["proposal"]
 
 def ertekeles(d:dict)->str:
     for szempont, ertek in d.items():
@@ -102,10 +118,10 @@ def ertekeles(d:dict)->str:
 # Szövegmezők létrehozása
 col1,col2 ,col3 = st.columns(3)
 with col1:
-    st.text_area("Szövegmező 1", key="text1", height=400)
+    st.text_area("Eredeti hirdetés szövege", key="text1", height=400)
 
 with col3:
-    st.text_area("Szövegmező 2", key="text2", height=400)
+    st.text_area("AI javaslat", key="text2", height=400)
 # Egyszerű feldolgozás gombnyomásra
 with col2:
     st.button("Feldolgozás indítása", on_click=feldolgozas,use_container_width=True)
