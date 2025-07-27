@@ -88,11 +88,23 @@ def feldolgozas():
     st.session_state.ratings=ai_result["scoring"]
     st.session_state.text2 = ai_result["proposal"]
 
-def ertekeles(d:dict)->str:
-    for szempont, ertek in d.items():
+def csillagok(d:dict)->str:
+    for _, ertek in d.items():
         
-        csillagok = f'{ertek}'+" - "+"⭐️" * int(ertek) + "☆" * (5 - int(ertek))
-        st.markdown(f"**{szempont}**  {csillagok}", unsafe_allow_html=True)
+        csillagok = "⭐️" * int(ertek) + "☆" * (5 - int(ertek))
+        st.markdown(f"{csillagok}", unsafe_allow_html=True)
+
+def pontszamok(d:dict)->str:
+    for _ , ertek in d.items():
+        
+        ertekek = f'{ertek}'
+        st.markdown(f"**{ertekek}**", unsafe_allow_html=True)
+
+def szempontok(d:dict)->str:
+    for szempont, _ in d.items():
+        
+        st.markdown(f"**{szempont}**", unsafe_allow_html=True)
+
 
 
 st.set_page_config(layout="wide")
@@ -120,14 +132,14 @@ if 'ratings' not in st.session_state:
 
 
 st.markdown(
-    "<h1 style='text-align: center;'>RevoText</h1><h3 style='text-align: center;'>Version:0.4</h3>",
+    "<h1 style='text-align: center;'>RevoText</h1><h6 style='text-align: center;'>Version:0.4</h6>",
     unsafe_allow_html=True
 )
 
 
 
 st.markdown("---")  # vízszintes vonal
-st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  # függőleges térköz
+st.markdown("<div style='height: 3px;'></div>", unsafe_allow_html=True)  # függőleges térköz
 
 col1,col2 ,col3 = st.columns(3)
 with col1:
@@ -140,9 +152,18 @@ with col3:
 # Egyszerű feldolgozás gombnyomásra
 with col2:
     st.markdown("---")  # vízszintes vonal
-    st.button("Kérem a javaslatot!", on_click=feldolgozas,use_container_width=True)
-    st.markdown("---")  # vízszintes vonal
-    ertekeles(st.session_state.ratings)
+    st.button("--- Kérem a javaslatot! --->", on_click=feldolgozas,use_container_width=True)
+    st.markdown("---")  # vízszintes vonal    
+    st.markdown(f"<p style='text-align:center;'>Az eredeti szöveg értékelése</p>", unsafe_allow_html=True)
+   
+    o1,o2,o3=st.columns([3,1,6])
+    with o1:
+        szempontok(st.session_state.ratings)
+    with o2:
+        pontszamok(st.session_state.ratings)   
+    with o3:
+        csillagok(st.session_state.ratings)
+    
     st.markdown("---")  # vízszintes vonal
 
 st.markdown("---")  # vízszintes vonal
