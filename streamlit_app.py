@@ -2,9 +2,7 @@ import streamlit as st
 
 import json
 from openai import OpenAI
-st.set_page_config(layout="wide")
-key = st.secrets["API_KEYS"]["OpenAI"]
-  
+
 
 def create_prompt(szoveg):
     prompt_message=[
@@ -27,7 +25,7 @@ def create_prompt(szoveg):
                             Értékeld az alábbi ingatlanhirdetés szöveget és az értékelést a scoring mezőbe helyezzed el.
                             Az alábbi szempontok alapján 1–5-ig pontozzad, és hozz létre egy összesített eredményt  1-8 közötti szempontok értékelésének átlagaként ez legyen a 9. Összesítés :
                             Majd a tudásod alapján adj egy alternatív javaslatot az eredeti szöveg javítására, hogy a lehető legjobban megfeleljen a szempontoknak. 
-                            Az alternatív javaslatot strukturáld, és tördeld a jobb érthetőség érdekében!
+                            Az alternatív javaslatot strukturáld, és tördeld a jobb érthetőség érdekében, de markdown formátumot ne használj!
                             Fontos, hogy a saját szempontrendszered szerint az alternatív javaslatod értékelése jobb legyen az eredeti értékelésnél!  
                             A válaszod csak érvényes JSON formátumban legyen, pontosan az alábbi struktúrában:
 
@@ -55,20 +53,6 @@ def create_prompt(szoveg):
 
 
 
-# ameddig nincs még értékelés minden alaphelyzeten lesz
-if 'ratings' not in st.session_state:
-    st.session_state.ratings = {
-        "Érthetőség": 1,
-        "Részletesség": 1,
-        "Szerkezet": 1,
-        "Célcsoport": 1,
-        "Stílus": 1,
-        "Előnyök": 1,
-        "Negatívumok": 1,
-        "Ösztönzés": 1,
-        "Összesítés": 1
-            }  
-
 
 def get_response(szoveg:str):
     client = OpenAI(api_key=key)
@@ -91,11 +75,6 @@ def get_response(szoveg:str):
 
     return(out_dict)
 
-st.markdown(
-    "<h1 style='text-align: center;'>RevoText</h1><h3 style='text-align: center;'>Version:0.4</h3>",
-    unsafe_allow_html=True
-)
-
 def feldolgozas():
     
     user_text=st.session_state.text1
@@ -115,31 +94,58 @@ def ertekeles(d:dict)->str:
         csillagok = f'{ertek}'+" - "+"⭐️" * int(ertek) + "☆" * (5 - int(ertek))
         st.markdown(f"**{szempont}**  {csillagok}", unsafe_allow_html=True)
 
-# Szövegmezők létrehozása
+
+st.set_page_config(layout="wide")
+key = st.secrets["API_KEYS"]["OpenAI"]
+  
+
+
+
+# vizuális elemek
+
+# ameddig nincs még értékelés minden alaphelyzeten lesz
+if 'ratings' not in st.session_state:
+    st.session_state.ratings = {
+        "Érthetőség": 0,
+        "Részletesség": 0,
+        "Szerkezet": 0,
+        "Célcsoport": 0,
+        "Stílus": 0,
+        "Előnyök": 0,
+        "Negatívumok": 0,
+        "Ösztönzés": 0,
+        "Összesítés": 0
+            }  
+
+
+
+st.markdown(
+    "<h1 style='text-align: center;'>RevoText</h1><h3 style='text-align: center;'>Version:0.4</h3>",
+    unsafe_allow_html=True
+)
+
+
+
+st.markdown("---")  # vízszintes vonal
+st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  # függőleges térköz
+
 col1,col2 ,col3 = st.columns(3)
 with col1:
     st.text_area("Eredeti hirdetés szövege", key="text1", height=600)
+    
 
 with col3:
     st.text_area("AI javaslat", key="text2", height=600)
+    
 # Egyszerű feldolgozás gombnyomásra
 with col2:
-    st.button("Feldolgozás indítása", on_click=feldolgozas,use_container_width=True)
-
-with col2:
+    st.markdown("---")  # vízszintes vonal
+    st.button("Kérem a javaslatot!", on_click=feldolgozas,use_container_width=True)
+    st.markdown("---")  # vízszintes vonal
     ertekeles(st.session_state.ratings)
+    st.markdown("---")  # vízszintes vonal
 
 st.markdown("---")  # vízszintes vonal
 st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  # függőleges térköz
 
 column1,column2=st.columns(2)
-with column1:
-    st.markdown("""
-            <style>
-        markdown {
-            background-color: #f5f5dc !important;
-            color: black !important;
-            }
-        </style>
-        """, unsafe_allow_html=True)
-    st.markdown(st.session_state.text2)
