@@ -128,6 +128,18 @@ with col2:
 
 with col2:
     ertekeles(st.session_state.ratings)
+
+st.markdown("---")  # vízszintes vonal
+st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  # függőleges térköz
+
 column1,column2=st.columns(2)
 with column1:
+    st.markdown("""
+            <style>
+        markdown {
+            background-color: #f5f5dc !important;
+            color: black !important;
+            }
+        </style>
+        """, unsafe_allow_html=True)
     st.markdown(st.session_state.text2)
