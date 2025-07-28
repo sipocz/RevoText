@@ -152,7 +152,7 @@ st.markdown("<div style='height: 3px;'></div>", unsafe_allow_html=True)  # függ
 c1,c2,c3,c4,c5 = st.columns([40,20,20,20,20])
 
 with c1:
-    with st.expander("📦 RevoText"):
+    with st.expander("📦 RevoText v0.5"):
         st.markdown('''## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
 
 A **RevoText** egy mesterséges intelligenciával működő **szövegasszisztens**, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
@@ -175,7 +175,7 @@ Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szö
 
 
 with c5:
-    with st.expander("Version: 0.5"):
+    with st.expander("📇 Kapcsolat"):
         st.markdown("""
             ### 📇 Kapcsolat
 
