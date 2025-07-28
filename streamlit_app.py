@@ -4,7 +4,7 @@ import json
 from openai import OpenAI
 
 
-def create_prompt(szoveg):
+def create_prompt(commands,txt):
     prompt_message=[
             {"role": "system",
              "content": f'''
@@ -24,8 +24,8 @@ def create_prompt(szoveg):
              "content": """
                             Értékeld az alábbi ingatlanhirdetés szöveget és az értékelést a scoring mezőbe helyezzed el.
                             Az alábbi szempontok alapján 1–5-ig pontozzad, és hozz létre egy összesített eredményt  1-8 közötti szempontok értékelésének átlagaként ez legyen a 9. Összesítés :
-                            Majd a tudásod alapján adj egy alternatív javaslatot az eredeti szöveg javítására, hogy a lehető legjobban megfeleljen a szempontoknak. 
-                            Az alternatív javaslatot strukturáld, és tördeld a jobb érthetőség érdekében, de markdown formátumot ne használj!
+                            Majd a tudásod alapján adj egy alternatív javaslatot az eredeti szöveg javítására, hogy a lehető legjobban megfeleljen a szempontoknak.  
+                            Az alternatív javaslat generálása során használjad STÍLUS: és a MÓD: cimkékkel megjelölt előírásokat, de markdown formátumot ne használj!
                             Fontos, hogy a saját szempontrendszered szerint az alternatív javaslatod értékelése jobb legyen az eredeti értékelésnél!  
                             A válaszod csak érvényes JSON formátumban legyen, pontosan az alábbi struktúrában:
 
@@ -43,25 +43,28 @@ def create_prompt(szoveg):
                                     "Összesítés": <szám.tizedes>"
                                 },
                             "proposal":"Ide kerüljön a javított szöveg javaslatod"    
-
-
-
-                    A HIRDETÉS SZÖVEGE:
-                        """+f" {szoveg}"}
+                        
+                        Előírások:
+                        """+f"{commands}"+f"Eredeti hirdetés: {txt}"}
         ]
+    print(prompt_message) #Debug
     return prompt_message
 
+def create_command(): # streamlit globális változókból dolgozik
+    s=f"STÍLUS:{st.session_state.mood}\n"
+    m=f"MÓD:{st.session_state.mode}\n"
+    return(s+m)
 
 
 
-def get_response(szoveg:str):
+def get_response(command:str, szoveg:str):
     client = OpenAI(api_key=key)
-    prompt_message=create_prompt(szoveg)
+    prompt_message=create_prompt(command, szoveg)
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=prompt_message,
-        temperature=0.5,
-        max_tokens=2900
+        temperature=0.7,
+        max_tokens=3900
     )
    
     content = response.choices[0].message.content
@@ -79,7 +82,8 @@ def feldolgozas():
     
     user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
-    ai_result=get_response(user_text)
+    command=create_command()
+    ai_result=get_response(command,user_text)
     
 
 
@@ -130,16 +134,67 @@ if 'ratings' not in st.session_state:
             }  
 
 
+if 'mood' not in st.session_state:                  #Global változó legyen
+    st.session_state.mood="💼 Professzionális"
 
-st.markdown(
-    "<h1 style='text-align: center;'>RevoText</h1><h6 style='text-align: center;'>Version:0.4</h6>",
-    unsafe_allow_html=True
-)
+if 'mode' not in st.session_state:                  #Global változó legyen
+    st.session_state.mode="Szöveges"
 
 
 
-st.markdown("---")  # vízszintes vonal
+
+
+
+
+
+#st.markdown("---")  # vízszintes vonal
 st.markdown("<div style='height: 3px;'></div>", unsafe_allow_html=True)  # függőleges térköz
+c1,c2,c3,c4,c5 = st.columns([40,20,20,20,20])
+
+with c1:
+    with st.expander("📦 RevoText"):
+        st.markdown('''## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
+
+A **RevoText** egy mesterséges intelligenciával működő **szövegasszisztens**, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
+
+Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szövegeket meggyőző hirdetésekké alakítja, kiemelve az ingatlan valódi értékeit.
+
+✍️ *Te csak írd le, amit szeretnél – a RevoText gondoskodik a tökéletes megfogalmazásról.*
+
+---
+
+### Mit nyújt a RevoText?
+
+- ✅ Automatikus szövegjavítás, stilisztikai és nyelvtani finomítás  
+- ✅ Választható hangnem: barátságos, professzionális, exkluzív... 
+- ✅ Kiemelések, érthető szerkezet, jobb olvashatóság  
+- ✅ SEO-barát szövegek a jobb online megjelenésért
+''')
+    
+    #st.markdown("<h3 style='text-align: left;'>RevoText</h3>", unsafe_allow_html=True
+
+
+with c5:
+    with st.expander("Version: 0.5"):
+        st.markdown("""
+            ### 📇 Kapcsolat
+
+            **👤 Név:** Sipőcz László  
+            **✉️ E-mail:** [sipoczlaszlo@gmail.com](mailto:sipoczlaszlo@gmail.com)  
+            **📞 Telefon:** +36 20 47 46 47 3  
+            **🔗 LinkedIn:** [linkedin.com/in/36204746473/](https://www.linkedin.com/in/36204746473/)
+            """)
+
+with c2:
+    st.session_state.mood = st.selectbox("💡 Válassz hangulatot:", ["💼 Professzionális", "😊 Barátságos", "🎩 Exkluzív", "🤖 Tech", "🎨 Kreatív"],key="mood_")
+    st.write(f"A választott hangulat: {st.session_state.mood }")
+with c3:
+    st.session_state.mode = st.selectbox("💡 Válassz módot:", ["📄 Szöveges", "✅ Tagolt"],key="mode_")
+    st.write(f"A választott mód: {st.session_state.mode}")
+
+
+   
+
 
 col1,col2 ,col3 = st.columns(3)
 with col1:
@@ -153,6 +208,7 @@ with col3:
 with col2:
     st.markdown("---")  # vízszintes vonal
     st.button("⎯⎯⎯  Kérem a javaslatot! ➤➤➤ ", on_click=feldolgozas,use_container_width=True)
+
     st.markdown("---")  # vízszintes vonal    
     st.markdown(f"<p style='text-align:center;'>Az eredeti szöveg értékelése</p>", unsafe_allow_html=True)
    
