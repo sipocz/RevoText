@@ -1,4 +1,4 @@
-## 🟦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
+## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
 
 A **RevoText** egy mesterséges intelligenciával működő szövegasszisztens, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
 
