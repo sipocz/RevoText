@@ -92,6 +92,29 @@ def feldolgozas():
     st.session_state.ratings=ai_result["scoring"]
     st.session_state.text2 = ai_result["proposal"]
 
+def use_test():
+    st.session_state.text1='''Győrtöl 14 kilometerre 3 szóbás, lakható csaldi ház eladó.
+
+Jellemezői:
+
+- 856 m2-es telke
+- a felítmény téglából épült, kő alapos
+- 78 m2-es lakótér
+- a tető héjzata cseríp
+- csatorna, viz és villan közművel ellátott a ház
+- kázcsonk telkhatáron
+- melleg vizellátás: elektronyos bolyler
+
+- fűtése: cserépkajha
+- 2007-ben felújítás keretein belül cserélték a nyílássárókat, tettőt (lícezés, fólia, héjazat), elektronyos- és vízhálózatot, burkolattokatt
+- 15 m2-es karázs + tárolasra alkalmas mellékes ípületek
+- ásot kut
+- tellyes kifiztést követően rövides időn belül birtokba vehető
+
+Több látnyivaló és nevezetessíg található a kösségbe, továbbá a környékén is, mint pl. a Pannonhalmi Főpátság, a pincesorr stb.
+Amenyiben felkelttette érdeklődést, keressen hizalommal. '''
+
+
 def csillagok(d:dict)->str:
     for _, ertek in d.items():
         
@@ -208,8 +231,9 @@ with col3:
 with col2:
     st.markdown("---")  # vízszintes vonal
     st.button("⎯⎯⎯  Kérem a javaslatot! ➤➤➤ ", on_click=feldolgozas,use_container_width=True)
+    st.button("◀◀◀ Teszt szöveg 😆 ⎯⎯⎯ ", on_click=use_test,use_container_width=True)
 
-    st.markdown("---")  # vízszintes vonal    
+    #st.markdown("---")  # vízszintes vonal    
     st.markdown(f"<p style='text-align:center;'>Az eredeti szöveg értékelése</p>", unsafe_allow_html=True)
    
     o1,o2,o3=st.columns([3,1,6])
@@ -226,3 +250,5 @@ st.markdown("---")  # vízszintes vonal
 st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)  # függőleges térköz
 
 column1,column2=st.columns(2)
+
+
