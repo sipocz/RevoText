@@ -177,12 +177,11 @@ if 'lang' not in st.session_state:                  #Global változó legyen
 
 
 #st.markdown("---")  # vízszintes vonal
-st.markdown("<div style='height: 3px;'></div>", unsafe_allow_html=True)  # függőleges térköz
-c1,c2,c3,c4,c5 = st.columns([40,20,20,20,20])
 
-with c1:
+head0,head1=st.columns([70,30])
+with head0:
     with st.expander("📦 RevoText v0.5"):
-        st.markdown('''## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
+        st.info('''## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
 
 A **RevoText** egy mesterséges intelligenciával működő **szövegasszisztens**, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
 
@@ -199,13 +198,10 @@ Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szö
 - ✅ Kiemelések, érthető szerkezet, jobb olvashatóság  
 - ✅ SEO-barát szövegek a jobb online megjelenésért
 ''')
-    
-    #st.markdown("<h3 style='text-align: left;'>RevoText</h3>", unsafe_allow_html=True
 
-
-with c5:
+with head1:
     with st.expander("📇 Kapcsolat"):
-        st.markdown("""
+        st.info("""
             ### 📇 Kapcsolat
 
             **👤 Név:** Sipőcz László  
@@ -214,6 +210,23 @@ with c5:
             **🔗 LinkedIn:** [linkedin.com/in/36204746473/](https://www.linkedin.com/in/36204746473/)
             """)
 
+
+
+
+st.markdown("<div style='height: 3px;'></div>", unsafe_allow_html=True)  # függőleges térköz
+c1,c2,c3,c4,c5 = st.columns([10,20,20,20,10])
+
+
+
+
+with c1:
+    pass
+    
+    #st.markdown("<h3 style='text-align: left;'>RevoText</h3>", unsafe_allow_html=True
+
+
+with c5:
+    pass
 with c2:
     st.session_state.mood = st.selectbox("💡 A hirdetés hangulata :", ["💼 Professzionális", "😊 Barátságos", "🎩 Exkluzív", "🤖 Tech", "🎨 Kreatív"],key="mood_", help="A generált hirdetési szöveg hangulatát ezzel a mezővel lehet befolyásolni!")
     # st.write(f"A választott hangulat: {st.session_state.mood }")
