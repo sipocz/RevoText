@@ -52,10 +52,16 @@ def create_prompt(commands,txt):
 
 def create_command(): # streamlit globális változókból dolgozik
     s=f"Használandó STÍLUS:{st.session_state.mood}\n"
-    m=f"Használandó MÓD:{st.session_state.mode}\n"
-    m=f"A hirdetés nyelve:{st.session_state.lang}\n"
     
-    return(s+m)
+    m=f"Használandó MÓD:{st.session_state.mode}\n"
+    if st.session_state.mode=="📄 Szöveges":
+        m=m+" Csak részletes szöveges leírást használj, ne legyen benne felsorolás, ne legyen lista és ne legyen tagolás sem!\n"
+    else:
+        m=m+"használ szöveg tagolást és felsorolásokat, listákat a szövegben, de ne legyen markdown formátum benne, csak kötőjellel  és soremeléssel tagolj!\n"
+       
+    l=f"A hirdetés szöveg nyelvéhez ezt a nyelvet használjad :{st.session_state.lang} !\n"
+    
+    return(s+m+l)
 
 
 
@@ -66,7 +72,7 @@ def get_response(command:str, szoveg:str):
         model="gpt-4o",
         messages=prompt_message,
         temperature=0.7,
-        max_tokens=3900
+        max_tokens=5000
     )
    
     content = response.choices[0].message.content
@@ -120,7 +126,7 @@ Amenyiben felkelttette érdeklődést, keressen hizalommal. '''
 def csillagok(d:dict)->str:
     for _, ertek in d.items():
         
-        csillagok = "⭐️" * int(ertek) + "☆" * (5 - int(ertek))
+        csillagok = "⭐️" * int(float(ertek)) + "☆" * (5 - int(ertek))
         st.markdown(f"{csillagok}", unsafe_allow_html=True)
 
 def pontszamok(d:dict)->str:
@@ -209,14 +215,14 @@ with c5:
             """)
 
 with c2:
-    st.session_state.mood = st.selectbox("💡 Válassz hangulatot:", ["💼 Professzionális", "😊 Barátságos", "🎩 Exkluzív", "🤖 Tech", "🎨 Kreatív"],key="mood_")
-    st.write(f"A választott hangulat: {st.session_state.mood }")
+    st.session_state.mood = st.selectbox("💡 A hirdetés hangulata :", ["💼 Professzionális", "😊 Barátságos", "🎩 Exkluzív", "🤖 Tech", "🎨 Kreatív"],key="mood_", help="A generált hirdetési szöveg hangulatát ezzel a mezővel lehet befolyásolni!")
+    # st.write(f"A választott hangulat: {st.session_state.mood }")
 with c3:
-    st.session_state.mode = st.selectbox("💡 Válassz módot:", ["📄 Szöveges", "✅ Tagolt"],key="mode_")
-    st.write(f"A választott mód: {st.session_state.mode}")
+    st.session_state.mode = st.selectbox("💡 A hirdetés megjelenési módja:", ["📄 Szöveges", "✅ Tagolt"],key="mode_",  help="A hirdetés **megjelenésének** módja választható")
+    # st.write(f"A választott mód: {st.session_state.mode}")
 with c4:
-    st.session_state.lang = st.selectbox("Nyelv választás",["Magyar:", "Angol", "Német"],key="lang_")
-    st.write(f"A választott nyelv: {st.session_state.lang}")
+    st.session_state.lang = st.selectbox("A hirdetés nyelve:",["Magyar", "Angol", "Német"],key="lang_", help="A hirdetés **nyelve** választható")
+    # st.write(f"A választott nyelv: {st.session_state.lang}")
 
 
    
@@ -225,7 +231,6 @@ with c4:
 col1,col2 ,col3 = st.columns(3)
 with col1:
     st.text_area("Eredeti hirdetés szövege", key="text1", height=600)
-    
 
 with col3:
     st.text_area("AI javaslat", key="text2", height=600)
