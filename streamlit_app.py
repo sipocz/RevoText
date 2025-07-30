@@ -51,8 +51,10 @@ def create_prompt(commands,txt):
     return prompt_message
 
 def create_command(): # streamlit globális változókból dolgozik
-    s=f"STÍLUS:{st.session_state.mood}\n"
-    m=f"MÓD:{st.session_state.mode}\n"
+    s=f"Használandó STÍLUS:{st.session_state.mood}\n"
+    m=f"Használandó MÓD:{st.session_state.mode}\n"
+    m=f"A hirdetés nyelve:{st.session_state.lang}\n"
+    
     return(s+m)
 
 
@@ -163,10 +165,8 @@ if 'mood' not in st.session_state:                  #Global változó legyen
 if 'mode' not in st.session_state:                  #Global változó legyen
     st.session_state.mode="Szöveges"
 
-
-
-
-
+if 'lang' not in st.session_state:                  #Global változó legyen
+    st.session_state.lang="Magyar"
 
 
 
@@ -214,6 +214,9 @@ with c2:
 with c3:
     st.session_state.mode = st.selectbox("💡 Válassz módot:", ["📄 Szöveges", "✅ Tagolt"],key="mode_")
     st.write(f"A választott mód: {st.session_state.mode}")
+with c4:
+    st.session_state.lang = st.selectbox("Nyelv választás",["Magyar:", "Angol", "Német"],key="lang_")
+    st.write(f"A választott nyelv: {st.session_state.lang}")
 
 
    
