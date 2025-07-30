@@ -228,13 +228,13 @@ with c1:
 with c5:
     pass
 with c2:
-    st.session_state.mood = st.selectbox("💡 A hirdetés hangulata :", ["💼 Professzionális", "😊 Barátságos", "🎩 Exkluzív", "🤖 Tech", "🎨 Kreatív"],key="mood_", help="A generált hirdetési szöveg hangulatát ezzel a mezővel lehet befolyásolni!")
+    st.session_state.mood = st.selectbox("🎭 A hirdetés hangulata :", ["💼 Professzionális", "😊 Barátságos", "🎩 Exkluzív", "🤖 Tech", "🎨 Kreatív"],key="mood_", help="A generált hirdetési szöveg hangulatát ezzel a mezővel lehet befolyásolni!")
     # st.write(f"A választott hangulat: {st.session_state.mood }")
 with c3:
-    st.session_state.mode = st.selectbox("💡 A hirdetés megjelenési módja:", ["📄 Szöveges", "✅ Tagolt"],key="mode_",  help="A hirdetés **megjelenésének** módja választható")
+    st.session_state.mode = st.selectbox("🧠 A hirdetés megjelenési módja:", ["📄 Szöveges", "✅ Tagolt"],key="mode_",  help="A hirdetés **megjelenésének** módja választható")
     # st.write(f"A választott mód: {st.session_state.mode}")
 with c4:
-    st.session_state.lang = st.selectbox("A hirdetés nyelve:",["Magyar", "Angol", "Német"],key="lang_", help="A hirdetés **nyelve** választható")
+    st.session_state.lang = st.selectbox("🌍 A hirdetés nyelve:",["Magyar", "Angol", "Német"],key="lang_", help="A hirdetés **nyelve** választható")
     # st.write(f"A választott nyelv: {st.session_state.lang}")
 
 
