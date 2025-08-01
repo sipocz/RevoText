@@ -55,9 +55,9 @@ def create_command(): # streamlit globális változókból dolgozik
     
     m=f"Használandó MÓD:{st.session_state.mode}\n"
     if st.session_state.mode=="📄 Szöveges":
-        m=m+" Csak részletes szöveges leírást használj, ne legyen benne felsorolás, ne legyen lista és ne legyen tagolás sem!\n"
+        m=m+"Csak részletes szöveges leírást használj, ne legyen benne felsorolás, ne legyen lista és ne legyen tagolás sem!\n"
     else:
-        m=m+"használ szöveg tagolást és felsorolásokat, listákat a szövegben, de ne legyen markdown formátum benne, csak kötőjellel  és soremeléssel tagolj!\n"
+        m=m+"Használj szöveg tagolást és felsorolásokat, listákat a szövegben! De ne legyen markdown formátum benne, csak kötőjellel  és soremeléssel tagolj!\n"
        
     l=f"A hirdetés szöveg nyelvéhez ezt a nyelvet használjad :{st.session_state.lang} !\n"
     
