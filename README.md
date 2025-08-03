@@ -14,3 +14,11 @@ Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szö
 - ✅ Választható hangnem: barátságos, professzionális vagy exkluzív - fejlesztés alatt 
 - ✅ Kiemelések, érthető szerkezet, jobb olvashatóság  
 - ✅ SEO-barát szövegek a jobb online megjelenésért
+
+
+## Felhasználói felület
+
+![UI screenshot](Streamlit_screenshots/2025-08-03 21 42 43.jpg)
+![UI screenshot](Streamlit_screenshots/2025-08-03 21 46 24.jpg)
+![UI screenshot](Streamlit_screenshots/2025-08-03 21 51 46.jpg)
+![UI screenshot](Streamlit_screenshots/2025-08-03 21 54 35.jpg)
