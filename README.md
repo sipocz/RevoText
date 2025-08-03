@@ -11,9 +11,15 @@ Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szö
 ### Mit nyújt a RevoText?
 
 - ✅ Automatikus szövegjavítás, stilisztikai és nyelvtani finomítás  
-- ✅ Választható hangnem: barátságos, professzionális vagy exkluzív - fejlesztés alatt 
+- ✅ Választható hangnem: barátságos, professzionális vagy exkluzív...
 - ✅ Kiemelések, érthető szerkezet, jobb olvashatóság  
 - ✅ SEO-barát szövegek a jobb online megjelenésért
+
+## 👤 Kapcsolat
+
+- **Név**: Sipőcz László  
+- **E-mail**: [sipoczlaszlo@gmail.com](mailto:sipoczlaszlo@gmail.com)  
+- **LinkedIn**: [https://linkedin.com/in/36204746473/](https://linkedin.com/in/36204746473/)
 
 
 ## Felhasználói felület
