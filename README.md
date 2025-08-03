@@ -18,7 +18,7 @@ Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szö
 
 ## Felhasználói felület
 
-![UI screenshot](Streamlit_screenshots/2025-08-03 21 42 43.jpg)
-![UI screenshot](Streamlit_screenshots/2025-08-03 21 46 24.jpg)
-![UI screenshot](Streamlit_screenshots/2025-08-03 21 51 46.jpg)
-![UI screenshot](Streamlit_screenshots/2025-08-03 21 54 35.jpg)
+![UI screenshot](Streamlit_screenshots/ui1.jpg)
+![UI screenshot](Streamlit_screenshots/ui2.jpg)
+![UI screenshot](Streamlit_screenshots/ui3.jpg)
+![UI screenshot](Streamlit_screenshots/ui4.jpg)
