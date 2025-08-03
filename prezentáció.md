@@ -13,3 +13,4 @@
 - [Colab Notebook (Zenga_download.ipynb)](https://github.com/sipocz/RevoText/blob/main/Zenga_download.ipynb)
 - [Streamlit alkalmazás forráskód](https://github.com/sipocz/RevoText/blob/main/streamlit_app.py)
 - [LinkedIn – Sipőcz László](https://linkedin.com/in/36204746473/)
+- [CodersRank](https://profile.codersrank.io/user/sipocz)
