@@ -4,6 +4,7 @@ import json
 from openai import OpenAI
 
 
+
 def create_prompt(commands,txt):
     prompt_message=[
             {"role": "system",
@@ -142,9 +143,35 @@ def szempontok(d:dict)->str:
 
 
 
-st.set_page_config(layout="wide")
+
+
 key = st.secrets["API_KEYS"]["OpenAI"]
-  
+
+
+
+
+st.set_page_config(layout="wide",page_title="RevoText", page_icon="📦",
+                   menu_items={
+        
+        "Report a bug": "https://github.com/sipocz/RevoText/issues",
+        "About": '''## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
+
+A **RevoText** egy mesterséges intelligenciával működő **szövegasszisztens**, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
+
+Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szövegeket meggyőző hirdetésekké alakítja, kiemelve az ingatlan valódi értékeit.
+
+✍️ *Te csak írd le, amit szeretnél – a RevoText gondoskodik a tökéletes megfogalmazásról.*
+
+---
+
+### Mit nyújt a RevoText?
+
+- ✅ Automatikus szövegjavítás, stilisztikai és nyelvtani finomítás  
+- ✅ Választható hangnem: barátságos, professzionális, exkluzív... 
+- ✅ Kiemelések, érthető szerkezet, jobb olvashatóság  
+- ✅ SEO-barát szövegek a jobb online megjelenésért
+'''})
+
 
 
 
