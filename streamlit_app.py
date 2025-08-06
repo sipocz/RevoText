@@ -73,7 +73,7 @@ def get_response(command:str, szoveg:str):
         model="gpt-4o",
         messages=prompt_message,
         temperature=0.7,
-        max_tokens=5000
+        max_tokens=7000
     )
    
     content = response.choices[0].message.content
