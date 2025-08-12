@@ -259,7 +259,7 @@ if 'lang' not in st.session_state:                  #Global változó legyen
 
 head0,head1=st.columns([70,30])
 with head0:
-    with st.expander("📦 RevoText v0.5"):
+    with st.expander("📦 RevoText v0.6 - Címek ajánlása"):
         st.info('''## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
 
 A **RevoText** egy mesterséges intelligenciával működő **szövegasszisztens**, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
