@@ -108,7 +108,10 @@ def create_title_prompt(szoveg: str,commands:str)->str:
 
 
 
-def create_command(mood:str,lang:str,mode:str)->str: 
+def create_command(mood:str,lang:str,mode:str)->str:
+    '''
+    
+    ''' 
     s=f"Használandó STÍLUS:{mood}\n"
     
     m=f"Használandó MÓD:{mode}\n"
@@ -131,16 +134,21 @@ def create_title_command(mood:str,  lang:str,mode="")->str:
 
 
 
-def get_response(szoveg:str,func,command)->dict:
+def get_response(szoveg:str,func,command:str)->dict:
     '''
-    A megadott szöveghez promptot készít (`create_prompt`), elküldi az OpenAI Chat
-    Completions API-nak (gpt-4o), majd a választ JSON-ként beolvassa és dict-ként visszaadja.
+    A megadott szöveghez promptot készít a func paraméter meghívásával a beadott szöveg és a command használatával, 
+    elküldi az OpenAI Chat Completions API-nak (gpt-4o), majd a választ JSON-ként beolvassa és dict-ként visszaadja.
 
     Paraméterek
     -----------
     szoveg : str
         A bemeneti szöveg, amelyből a `create_prompt` összeállítja a `messages` listát.
+    func : sub
+        funkció, ami előállítja az aktuális promptot
+    command : str
+        a funkció a command-dal is kiegészítit a statikus promptot
 
+     
     Visszatérés
     -----------
     dict
@@ -164,7 +172,12 @@ def get_response(szoveg:str,func,command)->dict:
 
 
 def create_ai_proposal():
-    
+    '''
+    A hirdetés szövegét generálja a megfelelő gomb on-click metódusa
+    Aktivizálódik, ha a HMI-on megnyomjuk a gombot
+    A felhasználó szövegéből indul és javasol egy hirdetési szöveget 
+    A promptot a hozzá tartozó prompt generátorral hozza létre. 
+    '''
     user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
     command=create_command(mood=st.session_state.mood,mode=st.session_state.mode,lang=st.session_state.lang)
@@ -178,10 +191,16 @@ def create_ai_proposal():
 
 
 def create_title():
-    
+    '''
+    A cím generálás gomb on-click metódusa
+    Aktivizálódik, ha a HMI-on megnyomjuk a gombot
+    A korábbi javaslathoz generál címet
+    A promptot a hozzá tartozó prompt generátorral hozza létre. 
+    '''
+
     gen_text=st.session_state.ai_proposal 
     # Eredményeket eltároljuk session_state-ben
-    command=create_title_command(mood=st.session_state.mood,mode=st.session_state.mode,lang=st.session_state.lang)
+    command=create_title_command(mood=st.session_state.mood,lang=st.session_state.lang,mode=st.session_state.mode)
     print(command)
     ai_result=get_response(gen_text,create_title_prompt,command)
     
@@ -191,49 +210,69 @@ def create_title():
     st.session_state.title_list=ai_result["titles"]
 
 def update_title():
+    '''
+    A grafikus felületen ezzel lehet a javasolt cymek közül választani
+    '''
+    
     print(st.session_state.selected_title)
-    st.session_state.text2=st.session_state.title_list[st.session_state.selected_title]+"\n\n"+st.session_state.ai_proposal
+    st.session_state.text2=st.session_state.selected_title+"\n\n"+st.session_state.ai_proposal
    
 
 
 
 
 def use_test():
+    '''
+    Egy teljesen hibás hirdetés, ami jó kiindulási alap, csal teszt célzattal született
+    '''
+    
     st.session_state.text1='''Győrtöl 14 kilometerre 3 szóbás, lakható csaldi ház eladó.
 
-Jellemezői:
+    Jellemezői:
 
-- 856 m2-es telke
-- a felítmény téglából épült, kő alapos
-- 78 m2-es lakótér
-- a tető héjzata cseríp
-- csatorna, viz és villan közművel ellátott a ház
-- kázcsonk telkhatáron
-- melleg vizellátás: elektronyos bolyler
+    - 856 m2-es telke
+    - a felítmény téglából épült, kő alapos
+    - 78 m2-es lakótér
+    - a tető héjzata cseríp
+    - csatorna, viz és villan közművel ellátott a ház
+    - kázcsonk telkhatáron
+    - melleg vizellátás: elektronyos bolyler
 
-- fűtése: cserépkajha
-- 2007-ben felújítás keretein belül cserélték a nyílássárókat, tettőt (lícezés, fólia, héjazat), elektronyos- és vízhálózatot, burkolattokatt
-- 15 m2-es karázs + tárolasra alkalmas mellékes ípületek
-- ásot kut
-- tellyes kifiztést követően rövides időn belül birtokba vehető
+    - fűtése: cserépkajha
+    - 2007-ben felújítás keretein belül cserélték a nyílássárókat, tettőt (lícezés, fólia, héjazat), elektronyos- és vízhálózatot, burkolattokatt
+    - 15 m2-es karázs + tárolasra alkalmas mellékes ípületek
+    - ásot kut
+    - tellyes kifiztést követően rövides időn belül birtokba vehető
 
-Több látnyivaló és nevezetessíg található a kösségbe, továbbá a környékén is, mint pl. a Pannonhalmi Főpátság, a pincesorr stb.
-Amenyiben felkelttette érdeklődést, keressen hizalommal. '''
+    Több látnyivaló és nevezetessíg található a kösségbe, továbbá a környékén is, mint pl. a Pannonhalmi Főpátság, a pincesorr stb.
+    Amenyiben felkelttette érdeklődést, keressen hizalommal. 
+    '''
 
 
 def csillagok(d:dict)->str:
+    '''
+    vizuális elem, az értékelést csillagok formájában is megadja
+    '''
+
     for _, ertek in d.items():
         
         csillagok = "⭐️" * int(float(ertek)) + "☆" * (5 - int(ertek))
         st.markdown(f"{csillagok}", unsafe_allow_html=True)
 
 def pontszamok(d:dict)->str:
+    '''
+    Az értékelés számformátumát hozza létre
+    '''
+
     for _ , ertek in d.items():
         
         ertekek = f'{ertek}'
         st.markdown(f"**{ertekek}**", unsafe_allow_html=True)
 
 def szempontok(d:dict)->str:
+    '''
+    Kiírja az alkalmazott értékelési szempontrendszert
+    '''
     for szempont, _ in d.items():
         
         st.markdown(f"**{szempont}**", unsafe_allow_html=True)
@@ -267,7 +306,6 @@ if 'ratings' not in st.session_state:
 if "text2" not in st.session_state:
     st.session_state.text2=""
 
-
 if 'mood' not in st.session_state:                  #Global változó legyen
     st.session_state.mood="💼 Professzionális"
 
@@ -279,6 +317,10 @@ if 'lang' not in st.session_state:                  #Global változó legyen
 
 if "proposed_text" not in st.session_state:
     st.session_state.proposed_text=""
+
+if "title_list"not in st.session_state:
+    st.session_state.title_list=["Nem volt még cím generálás!"]
+
 
 #st.markdown("---")  # vízszintes vonal
 
@@ -350,13 +392,15 @@ with col1:
     st.text_area("Eredeti hirdetés szövege", key="text1", height=600)
 
 with col3:
-    st.select_slider("Cím",options=[0,1,2,3,4],on_change=update_title,key="selected_title")
+    #st.select_slider("Cím",options=[0,1,2,3,4],on_change=update_title,key="selected_title")
+    
+    st.selectbox("Címek",st.session_state.title_list,on_change=update_title,key="selected_title",)
     st.text_area("AI javaslat", key="text2", height=600)
     
 # Egyszerű feldolgozás gombnyomásra
 with col2:
     st.markdown("---")  # vízszintes vonal
-    st.button("⎯⎯⎯  Kérem a javaslatot! ➤➤➤ ", on_click=create_ai_proposal,use_container_width=True)
+    st.button("⎯⎯⎯  Kérem a javaslatot! ➤➤➤ ", on_click=create_ai_proposal,use_container_width=True,disabled=len(st.session_state.text1)==0)
     
     st.button("⎯⎯⎯  Kérek egy jó címet ➤➤➤ ", on_click=create_title,use_container_width=True,disabled=len(st.session_state.text2)==0)
     
