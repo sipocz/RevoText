@@ -4,8 +4,65 @@ import json
 from openai import OpenAI
 
 
+st.set_page_config(layout="wide",
+                   page_title="RevoText", 
+                   page_icon="📦",
+                   menu_items={
+        
+        "Report a bug": "https://github.com/sipocz/RevoText/issues",
+        "About": '''
+        ## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
 
-def create_prompt(commands,txt):
+A **RevoText** egy mesterséges intelligenciával működő **szövegasszisztens**, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
+
+Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szövegeket meggyőző hirdetésekké alakítja, kiemelve az ingatlan valódi értékeit.
+
+✍️ *Te csak írd le, amit szeretnél – a RevoText gondoskodik a tökéletes megfogalmazásról.*
+
+---
+
+### Mit nyújt a RevoText?
+
+- ✅ Automatikus szövegjavítás, stilisztikai és nyelvtani finomítás  
+- ✅ Választható hangnem: barátságos, professzionális, exkluzív... 
+- ✅ Kiemelések, érthető szerkezet, jobb olvashatóság  
+- ✅ SEO-barát szövegek a jobb online megjelenésért
+'''})
+
+
+
+
+def create_prompt(szoveg,commands="None")->str:
+
+    content="""
+                            Értékeld az alábbi ingatlanhirdetés szöveget és az értékelést a scoring mezőbe helyezzed el.
+                            Az alábbi szempontok alapján 1–5-ig pontozzad, és hozz létre egy összesített eredményt  1-8 közötti szempontok értékelésének átlagaként ez legyen a 9. Összesítés :
+                            Majd a tudásod alapján adj egy alternatív javaslatot az eredeti szöveg javítására, hogy a lehető legjobban megfeleljen a szempontoknak.
+                            Az alternatív javaslatot strukturáld, és tördeld a jobb érthetőség érdekében, de markdown formátumot ne használj!
+                            Fontos, hogy a saját szempontrendszered szerint az alternatív javaslatod értékelése jobb legyen az eredeti értékelésnél!\n
+                            - A címek generálásánál vedd figyelembe a következőket:\n"
+            """ +f'{commands}\n' + """    
+                            A válaszod csak érvényes JSON formátumban legyen, pontosan az alábbi struktúrában:
+
+                            {"scoring":
+                                {
+
+                                    "Érthetőség": <szám>,
+                                    "Részletesség": <szám>,
+                                    "Szerkezet": <szám>,
+                                    "Célcsoport": <szám>,
+                                    "Stílus": <szám>,
+                                    "Előnyök": <szám>,
+                                    "Negatívumok": <szám>,
+                                    "Ösztönzés": <szám>,
+                                    "Összesítés": <szám.tizedes>"
+                                },
+                            "proposal":"Ide kerüljön a javított szöveg javaslatod"
+                            }
+
+
+                    A HIRDETÉS SZÖVEGE:
+                        """+f" {szoveg}"
     prompt_message=[
             {"role": "system",
              "content": f'''
@@ -22,77 +79,96 @@ def create_prompt(commands,txt):
                         7. Negatívumok őszinte kezelése
                         8. Eladásra ösztönzés'''},
             {"role": "user",
-             "content": """
-                            Értékeld az alábbi ingatlanhirdetés szöveget és az értékelést a scoring mezőbe helyezzed el.
-                            Az alábbi szempontok alapján 1–5-ig pontozzad, és hozz létre egy összesített eredményt  1-8 közötti szempontok értékelésének átlagaként ez legyen a 9. Összesítés :
-                            Majd a tudásod alapján adj egy alternatív javaslatot az eredeti szöveg javítására, hogy a lehető legjobban megfeleljen a szempontoknak.  
-                            Az alternatív javaslat generálása során használjad STÍLUS: és a MÓD: cimkékkel megjelölt előírásokat, de markdown formátumot ne használj!
-                            Fontos, hogy a saját szempontrendszered szerint az alternatív javaslatod értékelése jobb legyen az eredeti értékelésnél!  
-                            A válaszod csak érvényes JSON formátumban legyen, pontosan az alábbi struktúrában:
-
-                            {"scoring":
-                                {
-
-                                    "Érthetőség": <szám>,
-                                    "Részletesség": <szám>,
-                                    "Szerkezet": <szám>,
-                                    "Célcsoport": <szám>,
-                                    "Stílus": <szám>,
-                                    "Előnyök": <szám>,
-                                    "Negatívumok": <szám>,
-                                    "Ösztönzés": <szám>,
-                                    "Összesítés": <szám.tizedes>"
-                                },
-                            "proposal":"Ide kerüljön a javított szöveg javaslatod"    
-                        
-                        Előírások:
-                        """+f"{commands}"+f"Eredeti hirdetés: {txt}"}
+             "content": content}
         ]
-    print(prompt_message) #Debug
     return prompt_message
 
-def create_command(): # streamlit globális változókból dolgozik
-    s=f"Használandó STÍLUS:{st.session_state.mood}\n"
+def create_title_prompt(szoveg: str,commands:str)->str:
+    return [
+        {
+            "role": "system",
+            "content": (
+            "Te egy tömör szövegíró vagy. KIZÁRÓLAG a megadott hirdetésszöveg alapján "
+            "készíts pontosan öt ütős címajánlatot.\n\n"
+            "Korlátok:\n"
+            "- A kimenet KÖTELEZŐEN érvényes JSON objektum legyen pontosan ebben a formában: {\"titles\": [\"...\", \"...\", \"...\", \"...\", \"...\"]}\n"
+            "- Ne használj markdown-t, kód fence-et, extra kulcsokat, magyarázatot.\n"
+            "- Minden cím legfeljebb 60 karakter legyen, magyar nyelven, emojik és idézőjelek nélkül.\n"
+            "- Ne találj ki a hirdetésben nem szereplő tényeket.\n"
+            "- Legyenek egymástól különbözőek (más nézőpont/szövegezés), jól olvashatók és kattintásra ösztönzők.\n"
+            "- A címek generálásánál vedd figyelembe a következőket:\n"
+            f"-{commands}\n"    
+            ),
+        },
+        {
+            "role": "user",
+            "content": f"INGATLAN HIRDETÉS SZÖVEGE:\n{szoveg}"
+        }
+    ]
+
+
+
+def create_command(mood:str,lang:str,mode:str)->str: 
+    s=f"Használandó STÍLUS:{mood}\n"
     
-    m=f"Használandó MÓD:{st.session_state.mode}\n"
+    m=f"Használandó MÓD:{mode}\n"
     if st.session_state.mode=="📄 Szöveges":
         m=m+"Csak részletes szöveges leírást használj, ne legyen benne felsorolás, ne legyen lista és ne legyen tagolás sem!\n"
     else:
         m=m+"Használj szöveg tagolást és felsorolásokat, listákat a szövegben! De ne legyen markdown formátum benne, csak kötőjellel  és soremeléssel tagolj!\n"
        
-    l=f"A hirdetés szöveg nyelvéhez ezt a nyelvet használjad :{st.session_state.lang} !\n"
+    l=f"A hirdetés szöveg nyelvéhez ezt a nyelvet használjad :{lang} !\n"
     
     return(s+m+l)
 
+def create_title_command(mood:str,  lang:str,mode="")->str:
+    s=f"Használandó STÍLUS: {mood}\n"
+    l=f"A cím szöveg nyelvéhez ezt a nyelvet használjad: {lang}!\n"
+    
+    return(s+l)
 
 
-def get_response(command:str, szoveg:str):
+
+
+
+def get_response(szoveg:str,func,command)->dict:
+    '''
+    A megadott szöveghez promptot készít (`create_prompt`), elküldi az OpenAI Chat
+    Completions API-nak (gpt-4o), majd a választ JSON-ként beolvassa és dict-ként visszaadja.
+
+    Paraméterek
+    -----------
+    szoveg : str
+        A bemeneti szöveg, amelyből a `create_prompt` összeállítja a `messages` listát.
+
+    Visszatérés
+    -----------
+    dict
+        A modell által visszaadott JSON objektum, Python dict-be parse-olva.
+    '''
     client = OpenAI(api_key=key)
-    prompt_message=create_prompt(command, szoveg)
+    
+    prompt_message=func(szoveg,command)
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=prompt_message,
-        temperature=0.7,
-        max_tokens=7000
+        temperature=0.5,
+        max_tokens=7000,
+        response_format={ "type": "json_object" }   
     )
-   
+
     content = response.choices[0].message.content
-
-    # a gpt-4 így adja vissza a json választ, kiszedjük a jsont a felesleges keretből
-    if content.startswith("```json"):
-        content = content.strip("`").lstrip("json").strip()
-
-    # 
     out_dict = json.loads(content)
 
     return(out_dict)
+
 
 def feldolgozas():
     
     user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
-    command=create_command()
-    ai_result=get_response(command,user_text)
+    command=create_command(st.session_state.mood,st.session_state.mode,st.session_state.lang)
+    ai_result=get_response(user_text,create_prompt,command)
     
 
 
@@ -145,35 +221,11 @@ def szempontok(d:dict)->str:
 
 
 
+
+
+
+
 key = st.secrets["API_KEYS"]["OpenAI"]
-
-
-
-
-st.set_page_config(layout="wide",page_title="RevoText", page_icon="📦",
-                   menu_items={
-        
-        "Report a bug": "https://github.com/sipocz/RevoText/issues",
-        "About": '''## 📦 RevoText – Forradalmasítjuk az ingatlanhirdetéseket
-
-A **RevoText** egy mesterséges intelligenciával működő **szövegasszisztens**, amely segít a hirdetőknek profi, érthető és vonzó ingatlanleírásokat készíteni – egyszerűen és gyorsan.
-
-Legyen szó garzonlakásról vagy családi házról, a RevoText a vázlatos szövegeket meggyőző hirdetésekké alakítja, kiemelve az ingatlan valódi értékeit.
-
-✍️ *Te csak írd le, amit szeretnél – a RevoText gondoskodik a tökéletes megfogalmazásról.*
-
----
-
-### Mit nyújt a RevoText?
-
-- ✅ Automatikus szövegjavítás, stilisztikai és nyelvtani finomítás  
-- ✅ Választható hangnem: barátságos, professzionális, exkluzív... 
-- ✅ Kiemelések, érthető szerkezet, jobb olvashatóság  
-- ✅ SEO-barát szövegek a jobb online megjelenésért
-'''})
-
-
-
 
 # vizuális elemek
 
