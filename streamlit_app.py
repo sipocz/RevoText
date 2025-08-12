@@ -167,30 +167,34 @@ def create_ai_proposal():
     
     user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
-    command=create_command(st.session_state.mood,st.session_state.mode,st.session_state.lang)
+    command=create_command(mood=st.session_state.mood,mode=st.session_state.mode,lang=st.session_state.lang)
     ai_result=get_response(user_text,create_prompt,command)
     
-
-
     print(ai_result) # server oldali kiiratás 
     #st.write(ai_result) #Debug
     st.session_state.ratings=ai_result["scoring"]
-    st.session_state.text2 = ai_result["proposal"]
+    st.session_state.ai_proposal=ai_result["proposal"]  # ezt később még használni fogjuk
+    st.session_state.text2 = st.session_state.ai_proposal 
 
 
 def create_title():
     
-    gen_text=st.session_state.text2
+    gen_text=st.session_state.ai_proposal 
     # Eredményeket eltároljuk session_state-ben
-    command=create_command(st.session_state.mood,st.session_state.mode,st.session_state.lang)
+    command=create_title_command(mood=st.session_state.mood,mode=st.session_state.mode,lang=st.session_state.lang)
+    print(command)
     ai_result=get_response(gen_text,create_title_prompt,command)
     
-
-
     print(ai_result) # server oldali kiiratás 
     #st.write(ai_result) #Debug
+    st.session_state.text2=ai_result["titles"][0]+"\n\n"+st.session_state.ai_proposal
+    st.session_state.title_list=ai_result["titles"]
 
-    
+def update_title():
+    print(st.session_state.selected_title)
+    st.session_state.text2=st.session_state.title_list[st.session_state.selected_title]+"\n\n"+st.session_state.ai_proposal
+   
+
 
 
 
@@ -259,6 +263,9 @@ if 'ratings' not in st.session_state:
         "Ösztönzés": 0,
         "Összesítés": 0
             }  
+
+if "text2" not in st.session_state:
+    st.session_state.text2=""
 
 
 if 'mood' not in st.session_state:                  #Global változó legyen
@@ -343,7 +350,7 @@ with col1:
     st.text_area("Eredeti hirdetés szövege", key="text1", height=600)
 
 with col3:
-    st.select_slider("Cím",options=["1","2"])
+    st.select_slider("Cím",options=[0,1,2,3,4],on_change=update_title,key="selected_title")
     st.text_area("AI javaslat", key="text2", height=600)
     
 # Egyszerű feldolgozás gombnyomásra
