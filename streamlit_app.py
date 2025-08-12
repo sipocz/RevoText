@@ -163,7 +163,7 @@ def get_response(szoveg:str,func,command)->dict:
     return(out_dict)
 
 
-def feldolgozas():
+def create_ai_proposal():
     
     user_text=st.session_state.text1
     # Eredményeket eltároljuk session_state-ben
@@ -176,6 +176,23 @@ def feldolgozas():
     #st.write(ai_result) #Debug
     st.session_state.ratings=ai_result["scoring"]
     st.session_state.text2 = ai_result["proposal"]
+
+
+def create_title():
+    
+    gen_text=st.session_state.text2
+    # Eredményeket eltároljuk session_state-ben
+    command=create_command(st.session_state.mood,st.session_state.mode,st.session_state.lang)
+    ai_result=get_response(gen_text,create_title_prompt,command)
+    
+
+
+    print(ai_result) # server oldali kiiratás 
+    #st.write(ai_result) #Debug
+
+    
+
+
 
 def use_test():
     st.session_state.text1='''Győrtöl 14 kilometerre 3 szóbás, lakható csaldi ház eladó.
@@ -253,7 +270,8 @@ if 'mode' not in st.session_state:                  #Global változó legyen
 if 'lang' not in st.session_state:                  #Global változó legyen
     st.session_state.lang="Magyar"
 
-
+if "proposed_text" not in st.session_state:
+    st.session_state.proposed_text=""
 
 #st.markdown("---")  # vízszintes vonal
 
@@ -320,17 +338,21 @@ with c4:
    
 
 
-col1,col2 ,col3 = st.columns(3)
+col1,col2 ,col3 = st.columns([2,2,3])
 with col1:
     st.text_area("Eredeti hirdetés szövege", key="text1", height=600)
 
 with col3:
+    st.select_slider("Cím",options=["1","2"])
     st.text_area("AI javaslat", key="text2", height=600)
     
 # Egyszerű feldolgozás gombnyomásra
 with col2:
     st.markdown("---")  # vízszintes vonal
-    st.button("⎯⎯⎯  Kérem a javaslatot! ➤➤➤ ", on_click=feldolgozas,use_container_width=True)
+    st.button("⎯⎯⎯  Kérem a javaslatot! ➤➤➤ ", on_click=create_ai_proposal,use_container_width=True)
+    
+    st.button("⎯⎯⎯  Kérek egy jó címet ➤➤➤ ", on_click=create_title,use_container_width=True,disabled=len(st.session_state.text2)==0)
+    
     st.button("◀◀◀ Teszt szöveg 😆 ⎯⎯⎯ ", on_click=use_test,use_container_width=True)
 
     #st.markdown("---")  # vízszintes vonal    
